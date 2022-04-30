@@ -28,7 +28,7 @@ function get_filler()
     foreach($salt as $l) {
         $base = str_replace($l, '', $base);
     }
-    return '_-' . $base;
+    return '-' . $base;
 }
 
 function idToString($id)
@@ -55,7 +55,7 @@ function stringToId($str)
 {
     $i = 0;
     $id = '';
-    $str = preg_replace('/[\-'.get_filler().']/', '', $str);
+    $str = preg_replace('#['.get_filler().']#', '', $str);
     $str = str_split($str);
     $salt = str_split(get_salt());
     $salt = array_flip($salt);
