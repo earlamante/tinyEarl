@@ -43,11 +43,8 @@ function idToString($id)
         $string .= $salt[$t % count($salt)];
     }
     while(strlen($string) < 8) {
-        if(rand(0,1)) {
-            $string .= $filler[rand(0,count($filler)-1)];
-        } else {
-            $string = $filler[rand(0,count($filler)-1)] . $string;
-        }
+        $i = rand(0,strlen($string));
+        $string = substr($string, 0, $i) . $filler[rand(0,count($filler)-1)] . substr($string, $i);
     }
     return $string;
 }
