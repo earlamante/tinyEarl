@@ -40,6 +40,7 @@ class UrlsController extends Controller
 
     public function redirect($str)
     {
+        if(strlen($str) < 8) abort(404);
         $id = stringToId($str);
         $url = Url::findOrFail($id);
         return redirect($url->url, 301);

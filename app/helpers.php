@@ -33,15 +33,16 @@ function get_filler()
 
 function idToString($id)
 {
+    $t = 0;
     $string = '';
     $id = str_split($id);
     $salt = str_split(get_salt());
     $filler = str_split(get_filler());
     foreach($id as $i) {
-        $i = $i % count($salt);
-        $string .= $salt[$i];
+        $t += $i;
+        $string .= $salt[$t % count($salt)];
     }
-    while(strlen($string) < 11) {
+    while(strlen($string) < 8) {
         if(rand(0,1)) {
             $string .= $filler[rand(0,count($filler)-1)];
         } else {
@@ -53,7 +54,7 @@ function idToString($id)
 
 function stringToId($str)
 {
-    $i = 0;
+    $i = $p = 0;
     $id = '';
     $str = preg_replace('#['.get_filler().']#', '', $str);
     $str = str_split($str);
@@ -61,10 +62,11 @@ function stringToId($str)
     $salt = array_flip($salt);
     foreach($str as $k) {
         if($i > $salt[$k]) {
-            $i = (count($salt) - $i) + $salt[$k];
+            $i = (count($salt) - $p) + $salt[$k];
         } else {
-            $i = $salt[$k] - $i;
+            $i = $salt[$k] - $p;
         }
+        $p = $salt[$k];
         $id .= $i;
     }
     return $id;
