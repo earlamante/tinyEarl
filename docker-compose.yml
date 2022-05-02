@@ -1,0 +1,51 @@
+version: '3'
+
+networks:
+    tinyearl:
+
+services:
+    nginx:
+        image: nginx:stable-alpine
+        container_name: tinyearl_nginx
+        depends_on:
+            - mysql
+            - php
+        links:
+            - php
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/www/html
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:rw
+        networks:
+            - tinyearl
+
+    mysql:
+        image: mysql:8.0
+        container_name: tinyearl_mysql
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3306:3006"
+        volumes:
+            - ./mysql:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: tinyearl
+            MYSQL_USER: tinyearl
+            MYSQL_PASSWORD: tinyearl
+            MYSQL_ROOT_PASSWORD: tinyearl-root
+        networks:
+            - tinyearl
+
+    php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: tinyearl_php
+        volumes:
+            - ./:/var/www/html
+        ports:
+            - "9000:9000"
+        networks:
+            - tinyearl
+
